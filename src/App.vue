@@ -5,8 +5,8 @@ import { RocketLaunchIcon } from '@heroicons/vue/24/solid'
 
 const menuitems = ref([
     {id: 1, name: "Home" , link : "/"},
-    {id: 2, name: "Books" , link : "/books"},
-    {id: 3, name: "Calculators" , link : "/calculators"},
+    {id: 2, name: "Recipes" , link : "/recipes"},
+    {id: 3, name: "Planner" , link : "/planner"},
     {id: 4, name: "Manage Post" , link : "/managepost"},
     {id: 5, name: "Settings" , link : "/settings"},
 ])
