@@ -22,9 +22,7 @@
             </div>
             <div>
               <h2 class="text-lg md:text-xl font-semibold mb-1">Categories</h2>
-              <span v-for="category in recipe.categories" :key="category" class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm md:text-base font-semibold text-gray-700 mr-2 mb-2">
-                #{{ category }}
-              </span>
+              <category-tag v-for="category in recipe.categories" :key="category" :category="category" />
             </div>
             <div class="mt-4">
               <h2 class="font-dm-serif text-lg md:text-xl font-semibold mb-1">Cooking Time</h2>
@@ -43,6 +41,7 @@
   import { ref, onMounted } from 'vue';
   import { useRoute } from 'vue-router';
   import recipeService from '@/services/recipeService.js';
+  import CategoryTag from '@/components/CategoryTag.vue';
   
   const route = useRoute();
   const recipe = ref({});

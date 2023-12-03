@@ -46,7 +46,31 @@ const getRecipeById = async (id) => {
   }
 };
 
+const getRecipesByCategory = async (category) => {
+    try {
+      const snapshot = await get(child(ref(realtimeDb), 'recipes/'));
+      if (snapshot.exists()) {
+        let filteredRecipes = [];
+        snapshot.forEach(childSnapshot => {
+          let recipe = { id: childSnapshot.key, ...childSnapshot.val() };
+          if (recipe.categories && recipe.categories.includes(category)) {
+            filteredRecipes.push(recipe);
+          }
+        });
+        return filteredRecipes;
+      } else {
+        console.log("No recipes available");
+        return [];
+      }
+    } catch (error) {
+      console.error("Error fetching recipes by category:", error);
+      throw error;
+    }
+  };
+  
+
 export default {
   getAllRecipes,
-  getRecipeById
+  getRecipeById,
+  getRecipesByCategory
 };

@@ -1,24 +1,24 @@
 <template>
-    <div @click="goToRecipeDetail(recipe.id)" class="max-w-sm rounded overflow-hidden shadow-lg cursor-pointer">
-      <div class="image-container">
+    <div class="max-w-sm rounded overflow-hidden shadow-lg">
+      <div @click="goToRecipeDetail(recipe.id)" class="image-container cursor-pointer">
         <img class="recipe-image" :src="recipe.image" alt="Recipe Image">
       </div>
       <div class="px-6 py-4">
-        <div class="font-dm-serif font-bold text-xl mb-2">{{ recipe.title }}</div>
+        <div class="font-bold text-xl mb-2">{{ recipe.title }}</div>
       </div>
       <div class="flex justify-between items-center px-6 pb-2">
-        <span v-if="recipe.categories && recipe.categories.length" class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
-          #{{ recipe.categories[0] }}
-        </span>
+        <category-tag v-if="recipe.categories && recipe.categories.length" :category="recipe.categories[0]" />
         <star-rating :rating="recipe.rating"></star-rating>
       </div>
     </div>
   </template>
   
+  
   <script setup>
   import { defineProps } from 'vue'
   import { useRouter } from 'vue-router'
   import StarRating from './StarRating.vue'
+  import CategoryTag from '@/components/CategoryTag.vue';
   
   const props = defineProps({
     recipe: {
