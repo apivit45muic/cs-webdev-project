@@ -1,50 +1,69 @@
 <template>
-    <div class="container mx-auto px-4">
-      <div v-if="recipe.id" class="max-w-2xl mx-auto">
-        <h1 class="text-3xl font-bold mb-2">{{ recipe.title }}</h1>
-        <img :src="recipe.image" alt="Recipe Image" class="w-full h-auto mb-4 rounded-lg">
-        <p class="text-lg">{{ recipe.description }}</p>
-        <div class="mt-4">
-          <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#{{ recipe.category }}</span>
-          <!-- Add more tags or details here -->
+    <div class="container mx-auto px-4 py-6">
+      <div v-if="recipe.id" class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+        <!-- Responsive layout -->
+        <div class="md:flex">
+          <!-- Image on the left (or top on small screens) -->
+          <div class="md:w-1/2">
+            <img :src="recipe.image" alt="Recipe Image" class="w-full h-auto">
+          </div>
+          <!-- Details on the right (or bottom on small screens) -->
+          <div class="md:w-1/2 p-4">
+            <h1 class="font-dm-serif text-2xl md:text-3xl font-bold mb-2">{{ recipe.title }}</h1>
+            <div class="mb-4">
+              <h2 class="font-dm-serif text-lg md:text-xl font-semibold mb-1">Ingredients</h2>
+              <ul class="list-disc ml-6 text-base md:text-lg">
+                <li v-for="ingredient in recipe.ingredients" :key="ingredient">{{ ingredient }}</li>
+              </ul>
+            </div>
+            <div class="mb-4">
+              <h2 class="font-dm-serif text-lg md:text-xl font-semibold mb-1">Instructions</h2>
+              <p class="ml-4 text-base md:text-lg">{{ recipe.instructions }}</p>
+            </div>
+            <div>
+              <h2 class="text-lg md:text-xl font-semibold mb-1">Categories</h2>
+              <span v-for="category in recipe.categories" :key="category" class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm md:text-base font-semibold text-gray-700 mr-2 mb-2">
+                #{{ category }}
+              </span>
+            </div>
+            <div class="mt-4">
+              <h2 class="font-dm-serif text-lg md:text-xl font-semibold mb-1">Cooking Time</h2>
+              <p class="ml-4 text-base md:text-lg">{{ recipe.cookingTime }}</p>
+            </div>
+          </div>
         </div>
       </div>
       <div v-else>
         <p>Loading recipe...</p>
       </div>
     </div>
-</template>
+  </template>
   
   <script setup>
-  import { ref, onMounted } from 'vue'
-  import { useRoute } from 'vue-router'
+  import { ref, onMounted } from 'vue';
+  import { useRoute } from 'vue-router';
+  import recipeService from '@/services/recipeService.js';
   
-  const route = useRoute()
-  const recipe = ref({})
+  const route = useRoute();
+  const recipe = ref({});
   
-  onMounted(() => {
-    // Replace this with your actual API call or data fetching logic
-    const fetchRecipe = async (id) => {
-      const mockRecipe = {
-        id: id,
-        title: "Classic Margherita Pizza",
-        image: "path/to/margherita-pizza.jpg",
-        description: "A classic Italian favorite with fresh mozzarella and basil.",
-        category: "Italian"
-      };
-      // Simulate an API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      return mockRecipe;
-    };
-  
-    fetchRecipe(route.params.id).then(data => {
-        console.log("Fetched data:", data); // Log the fetched data for debugging
-        recipe.value = data;
-    });
-  })
+  onMounted(async () => {
+    try {
+      const fetchedRecipe = await recipeService.getRecipeById(route.params.id);
+      if (fetchedRecipe) {
+        recipe.value = fetchedRecipe;
+      } else {
+        console.error("Recipe not found");
+      }
+    } catch (error) {
+      console.error("Error fetching recipe:", error);
+    }
+  });
   </script>
   
   <style scoped>
-  /* Add any styling here */
+  .custom-font {
+  font-family: 'YourCustomFont', sans-serif;
+}
   </style>
   
