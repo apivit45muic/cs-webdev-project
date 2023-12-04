@@ -21,6 +21,7 @@
   
             <button type="submit" class="w-full bg-blue-500 text-white px-3 py-2 rounded hover:bg-blue-600">Login</button>
           </form>
+          <button @click="sendResetEmail" class="text-blue-500 underline mt-2">Forgot Password?</button>
           <p class="mt-4 text-left">
             Don't have an account? 
             <router-link to="/register" class="text-blue-500 underline">Register here</router-link>
@@ -32,7 +33,7 @@
   
   <script setup>
   import { ref } from 'vue';
-  import { signInWithEmailAndPassword } from 'firebase/auth';
+  import { signInWithEmailAndPassword, sendPasswordResetEmail  } from 'firebase/auth';
   import { auth } from '@/js/firebase.js';
   import router from '@/router/index.ts'
   
@@ -47,6 +48,21 @@
       alert(error.message);
     }
   };
+
+  const sendResetEmail = async () => {
+  if (!email.value) {
+    alert("Please enter your email address.");
+    return;
+  }
+
+  try {
+    await sendPasswordResetEmail(auth, email.value);
+    alert("Password reset email sent. Please check your inbox.");
+  } catch (error) {
+    alert(error.message);
+  }
+};
+
   </script>
   
   
