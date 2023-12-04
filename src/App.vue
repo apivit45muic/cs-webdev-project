@@ -1,7 +1,33 @@
 <script setup>
-import { ref } from 'vue'
-import { RouterLink, RouterView } from 'vue-router'
-import { RocketLaunchIcon } from '@heroicons/vue/24/solid'
+import { ref, onMounted } from 'vue';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '@/js/firebase.js';
+import { RouterLink, RouterView } from 'vue-router';
+import { RocketLaunchIcon } from '@heroicons/vue/24/solid';
+import router from '@/router/index.ts'
+
+const user = ref(null);
+
+onMounted(() => {
+  onAuthStateChanged(auth, (firebaseUser) => {
+    user.value = firebaseUser;
+  });
+});
+
+import { signOut } from 'firebase/auth';
+
+const logout = async () => {
+  try {
+    await signOut(auth);
+    // Redirect or perform actions after logout
+  } catch (error) {
+    console.error('Logout Failed', error);
+  }
+};
+
+const goToAddRecipe = () => {
+  router.push({ name: 'AddRecipe' });
+};
 
 const menuitems = ref([
     {id: 1, name: "Home" , link : "/"},
@@ -27,6 +53,19 @@ const menuitems = ref([
         <RouterLink :to="menuitem.link" class="hover:text-amber-400 md:text-xl">{{menuitem.name}}</RouterLink>
       </li>
     </ul>
+    <div>
+      <div v-if="user">
+        Welcome, {{ user.email }}
+        <button @click="logout">Logout</button>
+      </div>
+      <div v-else>
+        <RouterLink to="/login">Login</RouterLink>
+        <RouterLink to="/register">Register</RouterLink>
+      </div>
+    </div>
+  </div>
+  <div v-if="user" @click="goToAddRecipe" class="fixed bottom-4 right-4 bg-blue-500 text-white p-4 rounded-full cursor-pointer">
+    <span>+</span> <!-- You can replace this with an icon -->
   </div>
 </nav>
 
@@ -34,5 +73,12 @@ const menuitems = ref([
 
 </template>
 
-<style scoped>
+<style>
+/* Add styles for the floating action button */
+.fixed.bottom-4.right-4 {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  
+}
 </style>
