@@ -4,7 +4,7 @@
         <img class="recipe-image" :src="recipe.image" alt="Recipe Image">
       </div>
       <div class="px-6 py-4">
-        <div class="font-bold text-xl mb-2">{{ recipe.title }}</div>
+        <div class="font-dm-serif text-2xl font-bold mb-2">{{ recipe.title }}</div>
       </div>
       <div class="flex justify-between items-center px-6 pb-2">
         <category-tag v-if="recipe.categories && recipe.categories.length" :category="recipe.categories[0]" />

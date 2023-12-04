@@ -68,9 +68,30 @@ const getRecipesByCategory = async (category) => {
     }
   };
   
+  const getCategories = async () => {
+    try {
+      const snapshot = await get(child(ref(realtimeDb), 'categories/'));
+      if (snapshot.exists()) {
+        const categoriesObj = snapshot.val();
+        const categories = Object.values(categoriesObj);
+        categories.sort(); // Sort categories alphabetically
+        return categories;
+      } else {
+        console.log("No categories available");
+        return [];
+      }
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      return [];
+    }
+  };
+  
+  
+  
 
 export default {
   getAllRecipes,
   getRecipeById,
-  getRecipesByCategory
+  getRecipesByCategory,
+  getCategories
 };
