@@ -6,11 +6,11 @@ import { getAuth } from "firebase/auth";
 const firebaseConfig = {
   apiKey: "AIzaSyD3l5XIz1SpUJ8i0Cv_3gbCuyORTTictXk",
   authDomain: "iccs340-c55c0.firebaseapp.com",
+  databaseURL: "https://iccs340-c55c0-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "iccs340-c55c0",
-  storageBucket: "iccs3s40-c55c0.appspot.com",
+  storageBucket: "iccs340-c55c0.appspot.com",
   messagingSenderId: "532011645880",
-  appId: "1:532011645880:web:fae854cc7b720953546d4d",
-  databaseURL: "https://iccs340-c55c0-default-rtdb.asia-southeast1.firebasedatabase.app/" // Add your Realtime Database URL here
+  appId: "1:532011645880:web:902c244388a02368546d4d"
 };
 
 // Initialize Firebase
