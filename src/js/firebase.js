@@ -24,8 +24,12 @@ const realtimeDb = getDatabase(app);
 
 const auth = getAuth(app);
 
+import { getStorage } from "firebase/storage";
+const storage = getStorage(app);
+
 export {
     firestoreDb,
     realtimeDb,
-    auth
+    auth,
+    storage
 };

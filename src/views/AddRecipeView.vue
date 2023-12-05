@@ -64,7 +64,7 @@
         <div>
           <label class="block mb-2 font-semibold">Upload Image</label>
           <input
-            type="file"
+            type="file" ref="myfile"
             @change="onImageChange"
             class="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-blue-500 file:text-white hover:file:bg-blue-600"
           />
@@ -101,6 +101,7 @@ import {
   deleteObject
 } from 'firebase/storage'
 import { TrashIcon } from '@heroicons/vue/24/outline'
+import { storage } from '@/js/firebase.js';
 
 // Define a ref to store the URL of the current image
 const currentImageUrl = ref('')
@@ -136,8 +137,6 @@ const uploadImage = async () => {
     return;
   }
 
-  const storage = getStorage();
-  // Create a unique file name for the image
   const fileName = `${new Date().getTime()}-${image.value.name}`;
   const imageRef = storageRef(storage, `recipes/${fileName}`);
 
