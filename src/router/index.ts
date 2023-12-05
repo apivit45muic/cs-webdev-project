@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import HomeView from '../views/HomeView.vue'
 import RecipeView from '../views/RecipeView.vue'
 import CategoryView from '../views/CategoryView.vue';
@@ -7,9 +8,8 @@ import LoginView from '../views/LoginView.vue';
 import RegisterView from '../views/RegisterView.vue';
 import AddRecipeView from '../views/AddRecipeView.vue';
 
-const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
+
+const routes = [
     {
       path: '/',
       name: 'home',
@@ -38,12 +38,27 @@ const router = createRouter({
       name: 'RecipeView',
       component: RecipeView,
     },
-    { 
-      path: '/add-recipe', 
-      name: 'AddRecipe', 
-      component: AddRecipeView 
+    {
+      path: '/add-recipe',
+      name: 'AddRecipe',
+      component: () => import('../views/AddRecipeView.vue'),
+      meta: { requiresAuth: true } // Add this line
     }
-  ]
-})
-
-export default router;
+  ];
+  const router = createRouter({
+    history: createWebHistory(),
+    routes
+  });
+  
+  router.beforeEach((to, from, next) => {
+    const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+    const isAuthenticated = getAuth().currentUser;
+  
+    if (requiresAuth && !isAuthenticated) {
+      next('/'); // Redirect to home if not authenticated
+    } else {
+      next(); // Proceed as normal if authenticated or no auth required
+    }
+  });
+  
+  export default router;

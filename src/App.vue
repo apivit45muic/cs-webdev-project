@@ -19,7 +19,7 @@ import { signOut } from 'firebase/auth';
 const logout = async () => {
   try {
     await signOut(auth);
-    // Redirect or perform actions after logout
+    router.push('/');
   } catch (error) {
     console.error('Logout Failed', error);
   }
