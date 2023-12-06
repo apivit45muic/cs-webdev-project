@@ -261,8 +261,14 @@ const addRecipeToDatabase = async () => {
   const recipesRef = dbRef(database, 'recipes')
 
   try {
+
+    const newRecipeData = {
+      ...recipe.value,
+      timestamp: Date.now(), // Add the current timestamp
+    };
+
     // Adding the recipe to Firebase Realtime Database
-    const newRecipeRef = await push(recipesRef, recipe.value)
+    const newRecipeRef = await push(recipesRef, newRecipeData)
     console.log('New recipe added with ID:', newRecipeRef.key)
 
     router.push('/')
@@ -280,6 +286,11 @@ const addRecipe = async () => {
     !recipe.value.cookingTime
   ) {
     alert('Please complete all fields.')
+    return
+  }
+
+  if (recipe.value.categories.length === 0) {
+    alert('Please add at least one category.')
     return
   }
 
