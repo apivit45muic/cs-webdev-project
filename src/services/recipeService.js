@@ -1,4 +1,4 @@
-import { getDatabase, ref as dbRef, get, child, update } from "firebase/database";
+import { getDatabase, ref as dbRef, get, child, update , set } from "firebase/database";
 import { realtimeDb } from '@/js/firebase'; // Adjust the path to your firebase.js
 
 // Fetch all recipes
@@ -95,10 +95,48 @@ const updateRating = async (id, newRating) => {
   }
 };
 
+const getUserRatingForRecipe = async (recipeId, userId) => {
+  try {
+    const ratingRef = dbRef(getDatabase(), `recipes/${recipeId}/ratings/${userId}`);
+    const snapshot = await get(ratingRef);
+    return snapshot.exists() ? snapshot.val() : null;
+  } catch (error) {
+    console.error("Error fetching user rating:", error);
+    throw error;
+  }
+};
+
+// Set user rating for a recipe
+const setUserRatingForRecipe = async (recipeId, userId, rating) => {
+  const db = getDatabase();
+  const recipeRatingsRef = dbRef(db, `recipes/${recipeId}/ratings`);
+  
+  try {
+    // Set the individual user's rating
+    await set(dbRef(db, `recipes/${recipeId}/ratings/${userId}`), rating);
+
+    // Fetch all ratings to calculate the average
+    const snapshot = await get(recipeRatingsRef);
+    if (snapshot.exists()) {
+      const ratings = snapshot.val();
+      const total = Object.values(ratings).reduce((sum, current) => sum + current, 0);
+      const rating = total / Object.keys(ratings).length;
+
+      // Update the recipe's average rating
+      await update(dbRef(db, `recipes/${recipeId}`), { rating });
+    }
+  } catch (error) {
+    console.error("Error setting user rating:", error);
+    throw error;
+  }
+};
+
 export default {
   getAllRecipes,
   getRecipeById,
   getRecipesByCategory,
   getCategories,
-  updateRating
+  updateRating,
+  getUserRatingForRecipe,
+  setUserRatingForRecipe,
 };

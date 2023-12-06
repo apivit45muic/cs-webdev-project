@@ -35,40 +35,80 @@
         <p>Loading recipe...</p>
       </div>
       <!-- Rating Section -->
-    <div class="mt-4 text-center">
-      <h2 class="font-dm-serif text-lg md:text-xl font-semibold mb-1">Rate this Recipe</h2>
-      <InteractiveStarRating :initialRating="recipe.rating" @update-rating="updateRating" />
+      <div class="mt-4 text-center">
+        <h2 class="font-dm-serif text-lg md:text-xl font-semibold mb-1">Rate this Recipe</h2>
+        <InteractiveStarRating 
+    :initialRating="recipe.rating" 
+    :userRating="userRating" 
+    :isInteractive="!!user"
+    :isAuthenticated="!!user"
+    @update-rating="updateRating"
+    @auth-required="handleAuthRequired"
+  />
     </div>
 
     </div>
   </template>
   
   <script setup>
-  import { ref, onMounted } from 'vue';
-  import { useRoute } from 'vue-router';
-  import recipeService from '@/services/recipeService.js';
-  import CategoryTag from '@/components/CategoryTag.vue';
-  import InteractiveStarRating from '@/components/InteractiveStarRating.vue';
+import { ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import recipeService from '@/services/recipeService.js';
+import CategoryTag from '@/components/CategoryTag.vue';
+import InteractiveStarRating from '@/components/InteractiveStarRating.vue';
+import { auth } from '@/js/firebase.js';
   
   const route = useRoute();
   const recipe = ref({});
-  
-  onMounted(async () => {
-    try {
-      const fetchedRecipe = await recipeService.getRecipeById(route.params.id);
-      if (fetchedRecipe) {
-        recipe.value = fetchedRecipe;
-      } else {
-        console.error("Recipe not found");
-      }
-    } catch (error) {
-      console.error("Error fetching recipe:", error);
+  const user = auth.currentUser; // Get the current logged-in user
+  const userHasRated = ref(false);
+  const userRating = ref(0);
+
+  const handleAuthRequired = () => {
+  alert('You must be logged in to rate this recipe.');
+};
+
+  const fetchUserRating = async () => {
+    if (user) {
+        const rating = await recipeService.getUserRatingForRecipe(recipe.value.id, user.uid);
+        if (rating !== null) {
+            userHasRated.value = true;
+            userRating.value = rating;
+        }
     }
-  });
+};
+
   
-  const updateRating = async (newRating) => {
-  // Add logic to update the rating of the recipe
-  console.log("New rating:", newRating); // Placeholder logic
+onMounted(async () => {
+    try {
+        const fetchedRecipe = await recipeService.getRecipeById(route.params.id);
+        if (fetchedRecipe) {
+            recipe.value = fetchedRecipe;
+            await fetchUserRating();
+        } else {
+            console.error("Recipe not found");
+        }
+    } catch (error) {
+        console.error("Error fetching recipe:", error);
+    }
+});
+
+const updateRating = async (newRating) => {
+    if (user && !userHasRated.value) {
+        await recipeService.setUserRatingForRecipe(recipe.value.id, user.uid, newRating);
+        userHasRated.value = true;
+        userRating.value = newRating;
+        
+        // Refresh the recipe to get the updated average rating
+        try {
+            const refreshedRecipe = await recipeService.getRecipeById(recipe.value.id);
+            if (refreshedRecipe) {
+                recipe.value = refreshedRecipe;
+            }
+        } catch (error) {
+            console.error("Error refreshing recipe:", error);
+        }
+    }
 };
 </script>
   
