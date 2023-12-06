@@ -34,6 +34,12 @@
       <div v-else>
         <p>Loading recipe...</p>
       </div>
+      <!-- Rating Section -->
+    <div class="mt-4 text-center">
+      <h2 class="font-dm-serif text-lg md:text-xl font-semibold mb-1">Rate this Recipe</h2>
+      <InteractiveStarRating :initialRating="recipe.rating" @update-rating="updateRating" />
+    </div>
+
     </div>
   </template>
   
@@ -42,6 +48,7 @@
   import { useRoute } from 'vue-router';
   import recipeService from '@/services/recipeService.js';
   import CategoryTag from '@/components/CategoryTag.vue';
+  import InteractiveStarRating from '@/components/InteractiveStarRating.vue';
   
   const route = useRoute();
   const recipe = ref({});
@@ -58,11 +65,13 @@
       console.error("Error fetching recipe:", error);
     }
   });
-  </script>
+  
+  const updateRating = async (newRating) => {
+  // Add logic to update the rating of the recipe
+  console.log("New rating:", newRating); // Placeholder logic
+};
+</script>
   
   <style scoped>
-  .custom-font {
-  font-family: 'YourCustomFont', sans-serif;
-}
   </style>
   
