@@ -69,9 +69,6 @@ const menuitems = ref([
     </div>
   </nav>
   <RouterView />
-  <div>
-    <p>Current Route Name: {{ $route.name }}</p>
-  </div>
   <button
   v-if="user && $route.name !== 'AddRecipe'"
   @click="goToAddRecipe"
