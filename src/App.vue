@@ -67,11 +67,22 @@ const menuitems = ref([
         </div>
       </div>
     </div>
-    <div v-if="user" @click="goToAddRecipe" class="fixed bottom-4 right-4 bg-blue-500 text-white p-4 rounded-full cursor-pointer">
-      <span>+</span> <!-- You can replace this with an icon -->
-    </div>
   </nav>
   <RouterView />
+  <div>
+    <p>Current Route Name: {{ $route.name }}</p>
+  </div>
+  <button
+  v-if="user && $route.name !== 'AddRecipe'"
+  @click="goToAddRecipe"
+  title="Add Recipe"
+  class="fixed bottom-4 right-4 p-3 bg-blue-500 rounded-full cursor-pointer hover:bg-blue-600"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white" class="w-6 h-6">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+    </svg>
+  </button>
+
 </template>
 
 
@@ -79,8 +90,7 @@ const menuitems = ref([
 /* Add styles for the floating action button */
 .fixed.bottom-4.right-4 {
   position: fixed;
-  bottom: 1rem;
-  right: 1rem;
-  
+  bottom: 2rem;
+  right: 2rem;
 }
 </style>
