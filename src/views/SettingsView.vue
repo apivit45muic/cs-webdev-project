@@ -2,9 +2,12 @@
 import { ref, onMounted } from 'vue';
 import userService from '../services/userService';
 import { auth } from '@/js/firebase.js';
+import { update } from 'firebase/database';
 
 const displayName = ref('');
 let errorMessage = ref('');
+const successMessage = ref('Display name updated successfully!');
+const updateDone = ref(false);
 const userId = ref(auth.currentUser.uid);
 
 const fetchDisplayName = async () => {
@@ -14,8 +17,10 @@ const fetchDisplayName = async () => {
 onMounted(fetchDisplayName);
 
 const updateDisplayName = async () => {
+    updateDone.value = false;
     if (validateDisplayName(displayName.value)) {
         await userService.changeDisplayName(userId.value, displayName.value);
+        updateDone.value = true;
     }
 };
 
@@ -43,6 +48,7 @@ const validateDisplayName = (name) => {
                     class="w-full px-3 py-2 border rounded"
                 />
                 <p class="text-red-500">{{ errorMessage }}</p>
+                <p v-if="updateDone" class="text-green-500">{{ successMessage }}</p>
             </div>
 
             <button type="submit" @click="updateDisplayName" class="mt-4 px-4 py-2 rounded bg-blue-500 text-white">Update</button>
