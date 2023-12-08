@@ -31,8 +31,11 @@
             
           </div>
           <div class="author-info mt-4">
-        <span>Recipe by: {{ author.email }}</span>
-      </div>
+            <span>Recipe by: 
+              <span v-if="author.displayName">{{ author.displayName }}</span>
+              <span v-else>{{ author.email }}</span>
+            </span>
+          </div>
         </div>
         
       </div>

@@ -1,14 +1,18 @@
-import { getDatabase, ref as dbRef, set } from 'firebase/database';
+import { getDatabase, ref as dbRef, set, get } from 'firebase/database';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 
-const createUserOnDatabase = async (user) => {
+const database = getDatabase();
+
+const createUser = async (auth, email, password) => {
+    await createUserWithEmailAndPassword(auth, email.value, password.value);
+
+    console.log("User created successfully: ", auth.currentUser.uid);
+
     try {
-        // Add user information to the database
-        const database = getDatabase();
-        const userRef = dbRef(database, `users/${user.uid}`);
+        const userRef = dbRef(database, `users/${auth.currentUser.uid}`);
         await set(userRef, {
-            email: user.email,
-            displayName: user.email
-            // Add any other user information you'd like to store
+            email: email.value,
+            displayName: email.value
         });
     } catch (error) {
         alert(error.message);
@@ -16,6 +20,25 @@ const createUserOnDatabase = async (user) => {
 
 }
 
+const getDisplayNameByUid = async (uid) => {
+    const userRef = dbRef(database, `users/${uid}`);
+    const snapshot = await get(userRef);
+    if (snapshot.exists()) {
+        return snapshot.val().displayName;
+    } else {
+        return null;
+    }
+}
+
+const changeDisplayName = async (user, displayName) => {
+    const userRef = dbRef(database, `users/${user.uid}`);
+    await set(userRef, {
+        displayName: displayName
+    });
+}
+
 export default {
-    createUserOnDatabase
+    createUser,
+    changeDisplayName,
+    getDisplayNameByUid
 }

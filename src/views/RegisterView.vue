@@ -35,7 +35,6 @@
   
   <script setup>
   import { ref } from 'vue';
-  import { createUserWithEmailAndPassword } from 'firebase/auth';
   import userService from '@/services/userService.js';
   import { auth } from '@/js/firebase.js';
   import router from '@/router/index.ts';
@@ -49,10 +48,8 @@
       alert("Passwords do not match!");
       return;
     }
-
-    createUserWithEmailAndPassword(auth, email.value, password.value);
   
-    await userService.createUserOnDatabase(user);
+    await userService.createUser(auth, email, password);
 
     router.push('/');
   };

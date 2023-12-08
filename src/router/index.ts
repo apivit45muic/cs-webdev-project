@@ -7,6 +7,7 @@ import CategoriesView from '../views/CategoriesView.vue';
 import LoginView from '../views/LoginView.vue';
 import RegisterView from '../views/RegisterView.vue';
 import AddRecipeView from '../views/AddRecipeView.vue';
+import SettingsView from '../views/SettingsView.vue';
 
 
 const routes = [
@@ -43,6 +44,12 @@ const routes = [
       name: 'AddRecipe',
       component: () => import('../views/AddRecipeView.vue'),
       meta: { requiresAuth: true } // Add this line
+    },
+    {
+      path: '/settings',
+      name: 'Settings',
+      component: SettingsView,
+      meta: { requiresAuth: true }
     }
   ];
   const router = createRouter({
