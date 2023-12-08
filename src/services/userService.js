@@ -1,4 +1,4 @@
-import { getDatabase, ref as dbRef, set, get, push, update } from 'firebase/database';
+import { getDatabase, ref as dbRef, set, get, update, remove, child } from 'firebase/database';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 const database = getDatabase();
@@ -84,8 +84,22 @@ const getUserRecipes = async (userId) => {
 
 const deleteRecipeFromUser = async (userId, recipeId) => {
     try {
-        const userRef = dbRef(database, `users/${userId}/recipes/${recipeId}`);
-        await set(userRef, null);
+        console.log("Deleting recipe from user: ", userId, recipeId);
+        const userRecipesRef = dbRef(database, `users/${userId}/recipes`);
+        const snapshot = await get(userRecipesRef);
+
+        if (snapshot.exists()) {
+            const recipes = snapshot.val();
+            const recipeKey = Object.keys(recipes).find(key => recipes[key] === recipeId);
+
+            if (recipeKey) {
+                await remove(child(userRecipesRef, recipeKey));
+            } else {
+                console.log("Recipe not found in user's recipes");
+            }
+        } else {
+            console.log("User's recipes not found");
+        }
     } catch (error) {
         console.error("Error deleting recipe from user:", error);
         throw error;
