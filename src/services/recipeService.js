@@ -1,7 +1,9 @@
 import { getDatabase, ref as dbRef, get, child, update, set } from "firebase/database";
 import { realtimeDb } from '@/js/firebase'; // Adjust the path to your firebase.js
 
-// Fetch all recipes
+const MAX_RECIPES_INITIAL_LOAD = 144; // Maximum number of recipes to load initially
+
+// Fetch all recipes with a limit
 const getAllRecipes = async () => {
   try {
     const snapshot = await get(child(dbRef(realtimeDb), 'recipes/'));
@@ -12,13 +14,13 @@ const getAllRecipes = async () => {
         recipes.push(recipe);
       });
 
-      // Sort recipes by timestamp (assuming each recipe has a 'timestamp' field)
       recipes.sort((a, b) => b.timestamp - a.timestamp);
+      const limitedRecipes = recipes.slice(0, MAX_RECIPES_INITIAL_LOAD);
 
-      // Get hot recipes (top 5 rated, as an example)
-      const hotRecipes = [...recipes].sort((a, b) => b.rating - a.rating).slice(0, 5);
+      // Get hot recipes (top 5 rated, for example)
+      const hotRecipes = [...limitedRecipes].sort((a, b) => b.rating - a.rating).slice(0, 8);
 
-      return { allRecipes: recipes, hotRecipes };
+      return { allRecipes: limitedRecipes, hotRecipes };
     } else {
       console.log("No recipes available");
       return { allRecipes: [], hotRecipes: [] };
