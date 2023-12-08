@@ -45,7 +45,7 @@ const menuitems = ref([
       <div class="flex text-red-500 text-l">
         <RouterLink to="/" class="flex items-center">
           <RocketLaunchIcon class="h-6 w-6 text-blue-500 mr-2 md:mr-4 md:h-9 md:w-9" />
-          <h1 class="text-l md:text-2xl">TEXTBOOK BAY</h1>
+          <h1 class="text-l md:text-2xl">Plan Palate</h1>
         </RouterLink>
       </div>
 

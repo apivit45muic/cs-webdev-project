@@ -30,6 +30,8 @@
           <div class="mb-6">
             <h3 class="text-xl font-semibold mb-2">CREATORS</h3>
             Apiwit Chonkitgosol 6280561
+            <br/>
+            Lorenzo Cassio 6280924
           </div>
 
         </div>
