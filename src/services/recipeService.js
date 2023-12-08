@@ -1,4 +1,4 @@
-import { getDatabase, ref as dbRef, get, child, update , set } from "firebase/database";
+import { getDatabase, ref as dbRef, get, child, update, set } from "firebase/database";
 import { realtimeDb } from '@/js/firebase'; // Adjust the path to your firebase.js
 
 // Fetch all recipes
@@ -28,6 +28,7 @@ const getAllRecipes = async () => {
     throw error;
   }
 };
+
 
 // Fetch a single recipe by ID
 const getRecipeById = async (id) => {
@@ -110,7 +111,7 @@ const getUserRatingForRecipe = async (recipeId, userId) => {
 const setUserRatingForRecipe = async (recipeId, userId, rating) => {
   const db = getDatabase();
   const recipeRatingsRef = dbRef(db, `recipes/${recipeId}/ratings`);
-  
+
   try {
     // Set the individual user's rating
     await set(dbRef(db, `recipes/${recipeId}/ratings/${userId}`), rating);

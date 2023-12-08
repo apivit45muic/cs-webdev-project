@@ -1,4 +1,4 @@
-import { getDatabase, ref as dbRef, set, get } from 'firebase/database';
+import { getDatabase, ref as dbRef, set, get, push } from 'firebase/database';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 const database = getDatabase();
@@ -37,8 +37,20 @@ const changeDisplayName = async (user, displayName) => {
     });
 }
 
+// Add a new recipe to the user's list of recipes
+const addRecipeToUser = async (userId, recipeId) => {
+    try {
+        const recipeRef = push(dbRef(database, `users/${userId}/recipes`));
+        await set(recipeRef, recipeId);
+    } catch (error) {
+        console.error("Error adding recipe to user:", error);
+        throw error;
+    }
+}
+
 export default {
     createUser,
     changeDisplayName,
-    getDisplayNameByUid
+    getDisplayNameByUid,
+    addRecipeToUser
 }

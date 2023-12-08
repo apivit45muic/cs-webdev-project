@@ -151,9 +151,12 @@ import {
 } from 'firebase/storage'
 import { getDatabase, ref as dbRef, push, get } from 'firebase/database'
 import { TrashIcon } from '@heroicons/vue/24/outline'
-import { storage } from '@/js/firebase.js'
+import { storage, auth } from '@/js/firebase.js'
 import router from '@/router/index.ts'
 import { getAuth } from 'firebase/auth';
+import userService from '@/services/userService'
+
+const userId = auth.currentUser.uid
 
 // Define a ref to store the URL of the current image
 const currentImageUrl = ref('')
@@ -277,7 +280,8 @@ const addRecipeToDatabase = async () => {
   try {
     const newRecipeRef = await push(recipesRef, newRecipeData)
     console.log('New recipe added with ID:', newRecipeRef.key)
-    router.push('/')
+    await userService.addRecipeToUser(userId, newRecipeRef.key)
+    
   } catch (error) {
     console.error('Error adding recipe:', error)
   }
@@ -309,6 +313,8 @@ const addRecipe = async () => {
   try {
     // Call the function to add the recipe to the database
     await addRecipeToDatabase()
+    
+    router.push('/')
   } catch (error) {
     console.error('Error submitting recipe: ', error)
   }
