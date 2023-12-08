@@ -168,11 +168,6 @@ export default {
   updateRating,
   getUserRatingForRecipe,
   setUserRatingForRecipe,
-<<<<<<< HEAD
   getUserById,
   deleteRecipe
 };
-=======
-  getUserById
-};
->>>>>>> 8966293938eb050293fe22e843120875faea7f12
