@@ -131,6 +131,22 @@ const setUserRatingForRecipe = async (recipeId, userId, rating) => {
   }
 };
 
+const getUserById = async (userId) => {
+  try {
+    const userRef = dbRef(getDatabase(), `users/${userId}`);
+    const snapshot = await get(userRef);
+    if (snapshot.exists()) {
+      return snapshot.val();
+    } else {
+      console.log("User not found");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching user details:", error);
+    throw error;
+  }
+};
+
 export default {
   getAllRecipes,
   getRecipeById,
@@ -139,4 +155,5 @@ export default {
   updateRating,
   getUserRatingForRecipe,
   setUserRatingForRecipe,
+  getUserById
 };

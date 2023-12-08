@@ -153,6 +153,7 @@ import { getDatabase, ref as dbRef, push, get } from 'firebase/database'
 import { TrashIcon } from '@heroicons/vue/24/outline'
 import { storage } from '@/js/firebase.js'
 import router from '@/router/index.ts'
+import { getAuth } from 'firebase/auth';
 
 // Define a ref to store the URL of the current image
 const currentImageUrl = ref('')
@@ -257,20 +258,25 @@ const uploadImage = async () => {
 }
 
 const addRecipeToDatabase = async () => {
-  const database = getDatabase()
-  const recipesRef = dbRef(database, 'recipes')
+  const database = getDatabase();
+  const recipesRef = dbRef(database, 'recipes');
+  const auth = getAuth();
+  const user = auth.currentUser;
 
-  try {
+  if (!user) {
+    alert('You must be logged in to add a recipe.');
+    return;
+  }
 
-    const newRecipeData = {
+  const newRecipeData = {
       ...recipe.value,
-      timestamp: Date.now(), // Add the current timestamp
+      authorId: user.uid,
+      timestamp: Date.now(),
     };
 
-    // Adding the recipe to Firebase Realtime Database
+  try {
     const newRecipeRef = await push(recipesRef, newRecipeData)
     console.log('New recipe added with ID:', newRecipeRef.key)
-
     router.push('/')
   } catch (error) {
     console.error('Error adding recipe:', error)

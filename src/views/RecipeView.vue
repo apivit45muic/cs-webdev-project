@@ -21,15 +21,20 @@
               <p class="ml-4 text-base md:text-lg">{{ recipe.instructions }}</p>
             </div>
             <div>
-              <h2 class="text-lg md:text-xl font-semibold mb-1">Categories</h2>
+              <h2 class="font-dm-serif text-lg md:text-xl font-semibold mb-1">Categories</h2>
               <category-tag v-for="category in recipe.categories" :key="category" :category="category" />
             </div>
             <div class="mt-4">
               <h2 class="font-dm-serif text-lg md:text-xl font-semibold mb-1">Cooking Time</h2>
               <p class="ml-4 text-base md:text-lg">{{ recipe.cookingTime }}</p>
             </div>
+            
           </div>
+          <div class="author-info mt-4">
+        <span>Recipe by: {{ author.email }}</span>
+      </div>
         </div>
+        
       </div>
       <div v-else>
         <p>Loading recipe...</p>
@@ -63,6 +68,7 @@ import { auth } from '@/js/firebase.js';
   const user = auth.currentUser; // Get the current logged-in user
   const userHasRated = ref(false);
   const userRating = ref(0);
+  const author = ref(null);
 
   const handleAuthRequired = () => {
   alert('You must be logged in to rate this recipe.');
@@ -84,6 +90,9 @@ onMounted(async () => {
         const fetchedRecipe = await recipeService.getRecipeById(route.params.id);
         if (fetchedRecipe) {
             recipe.value = fetchedRecipe;
+            if (recipe.value.authorId) {
+    author.value = await recipeService.getUserById(recipe.value.authorId);
+  }
             await fetchUserRating();
         } else {
             console.error("Recipe not found");
