@@ -41,9 +41,16 @@ const changeDisplayName = async (userId, displayName) => {
 
 // Add a new recipe to the user's list of recipes
 const addRecipeToUser = async (userId, recipeId) => {
+    const userRecipesRef = dbRef(database, `users/${userId}/recipes`);
     try {
-        const recipeRef = push(dbRef(database, `users/${userId}/recipes`));
-        await set(recipeRef, recipeId);
+        const snapshot = await get(userRecipesRef);
+        if (snapshot.exists()) {
+            const recipeIds = snapshot.val();
+            recipeIds.push(recipeId);
+            await set(userRecipesRef, recipeIds);
+        } else {
+            await set(userRecipesRef, [recipeId]);
+        }
     } catch (error) {
         console.error("Error adding recipe to user:", error);
         throw error;
@@ -75,10 +82,21 @@ const getUserRecipes = async (userId) => {
     }
 }
 
+const deleteRecipeFromUser = async (userId, recipeId) => {
+    try {
+        const userRef = dbRef(database, `users/${userId}/recipes/${recipeId}`);
+        await set(userRef, null);
+    } catch (error) {
+        console.error("Error deleting recipe from user:", error);
+        throw error;
+    }
+}
+
 export default {
     createUser,
     changeDisplayName,
     getDisplayNameByUid,
     addRecipeToUser,
-    getUserRecipes
+    getUserRecipes,
+    deleteRecipeFromUser
 }

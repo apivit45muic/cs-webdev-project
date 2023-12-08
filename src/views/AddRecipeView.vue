@@ -149,7 +149,7 @@ import {
   getDownloadURL,
   deleteObject
 } from 'firebase/storage'
-import { getDatabase, ref as dbRef, push, get } from 'firebase/database'
+import { getDatabase, ref as dbRef, push, get, set } from 'firebase/database'
 import { TrashIcon } from '@heroicons/vue/24/outline'
 import { storage, auth } from '@/js/firebase.js'
 import router from '@/router/index.ts'
@@ -277,14 +277,18 @@ const addRecipeToDatabase = async () => {
       timestamp: Date.now(),
     };
 
-  try {
+    try {
     const newRecipeRef = await push(recipesRef, newRecipeData)
     console.log('New recipe added with ID:', newRecipeRef.key)
-    await userService.addRecipeToUser(userId, newRecipeRef.key)
-    
-  } catch (error) {
+
+    newRecipeData.id = newRecipeRef.key;
+    await set(newRecipeRef, newRecipeData);
+
+    await userService.addRecipeToUser(userId, newRecipeRef.key);
+    router.push('/');
+} catch (error) {
     console.error('Error adding recipe:', error)
-  }
+}
 }
 
 const addRecipe = async () => {
@@ -313,9 +317,7 @@ const addRecipe = async () => {
   try {
     // Call the function to add the recipe to the database
     await addRecipeToDatabase()
-    
-    router.push('/')
-  } catch (error) {
+      } catch (error) {
     console.error('Error submitting recipe: ', error)
   }
 }

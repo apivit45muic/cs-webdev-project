@@ -13,13 +13,22 @@ onMounted(async () => {
     displayName.value = await userService.getDisplayNameByUid(userId);
 })
 
+const handleRecipeDeleted = (id) => {
+    userRecipes.value = userRecipes.value.filter(recipe => recipe.id !== id);
+}
+
 </script>
 
 <template>
     <div class="container mx-auto px-4 py-6">
       <h1 class="text-2xl font-bold mb-4">Recipes By {{ displayName }}</h1>
       <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        <recipe-card v-for="recipe in userRecipes" :key="recipe.id" :recipe="recipe" />
+        <recipe-card
+          v-for="recipe in userRecipes"
+          :key="recipe.key"
+          :recipe="recipe"
+          @recipeDeleted="handleRecipeDeleted"
+        />
       </div>
     </div>
 </template>

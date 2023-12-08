@@ -148,6 +148,16 @@ const getUserById = async (userId) => {
   }
 };
 
+const deleteRecipe = async (recipeId) => {
+  try {
+    const recipeRef = dbRef(getDatabase(), `recipes/${recipeId}`);
+    await set(recipeRef, null);
+  } catch (error) {
+    console.error("Error deleting recipe:", error);
+    throw error;
+  }
+};
+
 export default {
   getAllRecipes,
   getRecipeById,
@@ -156,5 +166,6 @@ export default {
   updateRating,
   getUserRatingForRecipe,
   setUserRatingForRecipe,
-  getUserById
+  getUserById,
+  deleteRecipe
 };
