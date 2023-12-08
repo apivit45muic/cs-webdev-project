@@ -8,6 +8,7 @@ import LoginView from '../views/LoginView.vue';
 import RegisterView from '../views/RegisterView.vue';
 import AddRecipeView from '../views/AddRecipeView.vue';
 import SettingsView from '../views/SettingsView.vue';
+import ManagePostView from '../views/ManagePostView.vue';
 
 
 const routes = [
@@ -45,6 +46,13 @@ const routes = [
       component: () => import('../views/AddRecipeView.vue'),
       meta: { requiresAuth: true } // Add this line
     },
+    {
+      path: '/manage-post',
+      name: 'ManagePost',
+      component: ManagePostView,
+      meta: { requiresAuth: true }
+    }
+    ,
     {
       path: '/settings',
       name: 'Settings',

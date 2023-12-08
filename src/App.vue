@@ -33,7 +33,7 @@ const menuitems = ref([
     {id: 1, name: "Home" , link : "/"},
     {id: 2, name: "Category" , link : "/category"},
     {id: 3, name: "Planner" , link : "/planner"},
-    {id: 4, name: "Manage Post" , link : "/managepost"},
+    {id: 4, name: "Manage Post" , link : "/manage-post"},
     {id: 5, name: "Settings" , link : "/settings"},
 ])
 </script>
