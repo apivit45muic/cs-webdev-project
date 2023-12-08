@@ -31,8 +31,7 @@ const goToAddRecipe = () => {
 
 const menuitems = ref([
     {id: 1, name: "Home" , link : "/"},
-    {id: 2, name: "Recipes" , link : "/recipes"},
-    {id: 3, name: "Category" , link : "/category"},
+    {id: 2, name: "Category" , link : "/category"},
     {id: 3, name: "Planner" , link : "/planner"},
     {id: 4, name: "Manage Post" , link : "/managepost"},
     {id: 5, name: "Settings" , link : "/settings"},
