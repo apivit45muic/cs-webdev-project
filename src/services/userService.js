@@ -1,4 +1,4 @@
-import { getDatabase, ref as dbRef, set, get, push } from 'firebase/database';
+import { getDatabase, ref as dbRef, set, get, push, update } from 'firebase/database';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 const database = getDatabase();
@@ -30,9 +30,11 @@ const getDisplayNameByUid = async (uid) => {
     }
 }
 
-const changeDisplayName = async (user, displayName) => {
-    const userRef = dbRef(database, `users/${user.uid}`);
-    await set(userRef, {
+const changeDisplayName = async (userId, displayName) => {
+    console.log("User ID: ", userId);
+    console.log("Changing display name to: ", displayName);
+    const userRef = dbRef(database, `users/${userId}`);
+    await update(userRef, {
         displayName: displayName
     });
 }
@@ -48,9 +50,35 @@ const addRecipeToUser = async (userId, recipeId) => {
     }
 }
 
+const getUserRecipes = async (userId) => {
+    try {
+        const userRef = dbRef(database, `users/${userId}/recipes`);
+        const snapshot = await get(userRef);
+        if (snapshot.exists()) {
+            const recipeIds = snapshot.val();
+            const recipes = [];
+            for (const recipeId of Object.values(recipeIds)) {
+                const recipeRef = dbRef(database, `recipes/${recipeId}`);
+                const recipeSnapshot = await get(recipeRef);
+                if (recipeSnapshot.exists()) {
+                    recipes.push(recipeSnapshot.val());
+                }
+            }
+            return recipes;
+        } else {
+            console.log("User not found");
+            return null;
+        }
+    } catch (error) {
+        console.error("Error fetching user details:", error);
+        throw error;
+    }
+}
+
 export default {
     createUser,
     changeDisplayName,
     getDisplayNameByUid,
-    addRecipeToUser
+    addRecipeToUser,
+    getUserRecipes
 }

@@ -1,19 +1,21 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import userService from '../services/userService';
+import { auth } from '@/js/firebase.js';
 
 const displayName = ref('');
 let errorMessage = ref('');
+const userId = ref(auth.currentUser.uid);
 
 const fetchDisplayName = async () => {
-    displayName.value = await userService.getDisplayNameByUid(auth.currentUser.uid);
+    displayName.value = await userService.getDisplayNameByUid(userId.value);
 };
 
 onMounted(fetchDisplayName);
 
 const updateDisplayName = async () => {
     if (validateDisplayName(displayName.value)) {
-        await userService.updateDisplayName(displayName.value);
+        await userService.changeDisplayName(userId.value, displayName.value);
     }
 };
 
