@@ -13,13 +13,14 @@ const store = useRecipesStore();
 const selectedRecipes = store.selectedRecipes;
 const ingredients = store.ingredients;
 
-const ingredientsRef = ref(ingredients);
+const ingredientsRef = ref([]);
 
 onMounted(async () => {
   const result = await recipeService.getAllRecipesArray();
   recipes.value = result;
   recipeTitles.value = result.map((recipe) => recipe.title);
   recipeAuthors.value = await Promise.all(result.map(recipe => userService.getDisplayNameByUid(recipe.authorId)));
+  await fetchIngredients();
 });
 
 const fetchIngredients = async () => {
@@ -48,7 +49,7 @@ const recipeOptions = computed(() => {
 const clearRecipes = () => {
     for (let day in selectedRecipes) {
       selectedRecipes[day] = ['','',''];
-      ingredients.value.splice(0);
+      ingredientsRef.value = [];
     }
 }
 

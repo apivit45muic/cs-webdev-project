@@ -285,7 +285,6 @@ const addRecipeToDatabase = async () => {
     await set(newRecipeRef, newRecipeData);
 
     await userService.addRecipeToUser(userId, newRecipeRef.key);
-    router.push('/');
 } catch (error) {
     console.error('Error adding recipe:', error)
 }
@@ -317,6 +316,7 @@ const addRecipe = async () => {
   try {
     // Call the function to add the recipe to the database
     await addRecipeToDatabase()
+    router.push('/'); // Redirect to home page
       } catch (error) {
     console.error('Error submitting recipe: ', error)
   }
