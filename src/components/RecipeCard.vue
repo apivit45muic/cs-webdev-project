@@ -27,7 +27,6 @@
   
   
 <script setup>
-  import { defineProps, defineEmits } from 'vue'
   import { useRouter } from 'vue-router'
   import StarRating from './StarRating.vue'
   import CategoryTag from '@/components/CategoryTag.vue';

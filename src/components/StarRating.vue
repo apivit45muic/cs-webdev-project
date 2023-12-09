@@ -12,7 +12,6 @@
   </template>
   
   <script setup>
-  import { defineProps } from 'vue';
   import { StarIcon as StarSolidIcon } from '@heroicons/vue/24/solid';
   import { StarIcon as StarOutlineIcon } from '@heroicons/vue/24/outline';
   

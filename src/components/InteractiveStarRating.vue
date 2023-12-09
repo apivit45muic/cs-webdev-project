@@ -20,7 +20,7 @@
   </template>
   
   <script setup>
-  import { ref, computed, watch, defineProps, defineEmits } from 'vue';
+  import { ref, computed, watch } from 'vue';
   import { StarIcon as StarSolidIcon } from '@heroicons/vue/24/solid';
   import { StarIcon as StarOutlineIcon } from '@heroicons/vue/24/outline';
   
