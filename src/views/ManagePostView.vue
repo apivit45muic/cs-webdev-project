@@ -14,7 +14,9 @@ onMounted(async () => {
 })
 
 const handleRecipeDeleted = (id) => {
+  if (window.confirm('Are you sure you want to delete this post?')) {
     userRecipes.value = userRecipes.value.filter(recipe => recipe.id !== id);
+  }
 }
 
 </script>
