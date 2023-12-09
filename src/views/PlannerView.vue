@@ -1,22 +1,19 @@
 <script setup>
 import recipeService from '@/services/recipeService.js';
 import userService from '@/services/userService';
-import { ref, onMounted, computed, reactive } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
+import { useRecipesStore } from '@/stores/recipes';
 
 const recipes = ref([]);
-const ingredients = ref([]);
 const recipeTitles = ref([]);
 const recipeAuthors = ref([]);
+const ingredientsText = ref('');
 
-const selectedRecipes = reactive({
-  Monday: ['', '', ''],
-  Tuesday: ['', '', ''],
-  Wednesday: ['', '', ''],
-  Thursday: ['', '', ''],
-  Friday: ['', '', ''],
-  Saturday: ['', '', ''],
-  Sunday: ['', '', '']
-});
+const store = useRecipesStore();
+const selectedRecipes = store.selectedRecipes;
+const ingredients = store.ingredients;
+
+const ingredientsRef = ref(ingredients);
 
 onMounted(async () => {
   const result = await recipeService.getAllRecipesArray();
@@ -26,17 +23,19 @@ onMounted(async () => {
 });
 
 const fetchIngredients = async () => {
-  ingredients.value = []; // Clear the ingredients array
-  for (const day in selectedRecipes) {
-    for (const recipeId of selectedRecipes[day]) {
+  const newIngredients = []; // Create a new ingredients array
+  for (const day in store.selectedRecipes) {
+    for (const recipeId of store.selectedRecipes[day]) {
       if (recipeId) {
         const recipeIngredients = await recipeService.getIngredientsFromRecipe(recipeId);
         if (recipeIngredients) {
-          ingredients.value = [...ingredients.value, ...recipeIngredients]; // Add the ingredients to the array
+          newIngredients.push(...recipeIngredients);
         }
       }
     }
   }
+  store.setIngredients(newIngredients);
+  ingredientsRef.value = newIngredients;
 };
 
 const recipeOptions = computed(() => {
@@ -49,9 +48,39 @@ const recipeOptions = computed(() => {
 const clearRecipes = () => {
     for (let day in selectedRecipes) {
       selectedRecipes[day] = ['','',''];
-      ingredients.value = [];
+      ingredients.value.splice(0);
     }
 }
+
+const generateIngredientsText = () => {
+  if (ingredients.length > 0) {
+    const ingredientsText = `data:text/plain;charset=utf-8,${encodeURIComponent(ingredients.join('\n'))}`;
+    const link = document.createElement('a');
+    link.href = ingredientsText;
+    link.download = 'ingredients.txt';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+};
+
+watch(ingredients, () => {
+  URL.revokeObjectURL(ingredientsText.value);
+});
+
+watch(selectedRecipes, (newSelectedRecipes) => {
+  store.setSelectedRecipes(newSelectedRecipes);
+});
+
+const handleRecipeSelection = async (day, meal, recipeId) => {
+  store.selectedRecipes[day][meal] = recipeId;
+  
+  await fetchIngredients();
+}
+
+watch(ingredients, (newIngredients) => {
+  store.setIngredients(newIngredients);
+});
 </script>
 
 <template>
@@ -66,7 +95,7 @@ const clearRecipes = () => {
           <h2 class="font-bold">{{ day }}</h2>
           <div class="flex flex-col">
             <div v-for="(recipe, index) in selectedRecipes[day]" :key="index">
-              <select v-model="selectedRecipes[day][index]" v-if="recipeOptions.length > 0" :name="`recipes-${day}-${index}`" :id="`recipes-${day}-${index}`" class="mt-2 w-64 border rounded" @change="fetchIngredients(day)">
+              <select v-model="selectedRecipes[day][index]" v-if="recipeOptions.length > 0" :name="`recipes-${day}-${index}`" :id="`recipes-${day}-${index}`" class="mt-2 w-64 border rounded" @change="handleRecipeSelection(day, index, selectedRecipes[day][index])">
                 <option disabled value="">Select a recipe</option>
                 <option v-for="option in recipeOptions" :key="option.id" :value="option.id">
                   {{ option.text }}
@@ -82,12 +111,16 @@ const clearRecipes = () => {
 
     <!--Ingredients Column-->
     <div class="w-1/2">
-      <div class="container mx-auto">
+      <div class="container mb-4">
         <h1 class="text-2xl font-bold mb-4">Ingredients</h1>
         <ul>
-          <li v-for="ingredient in ingredients" :key="ingredient">{{ ingredient }}</li>
+          <li v-for="ingredient in ingredientsRef" :key="ingredient">{{ ingredient }}</li>
         </ul>
       </div>
+      <!-- Save button -->
+      <button @click="generateIngredientsText" class="mb-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        Download Ingredients List
+      </button>
     </div>
   </div>
 </template>
