@@ -31,6 +31,28 @@ const getAllRecipes = async () => {
   }
 };
 
+const getAllRecipesArray = async () => {
+  try {
+    const snapshot = await get(child(dbRef(realtimeDb), 'recipes/'));
+    if (snapshot.exists()) {
+      let recipes = [];
+      snapshot.forEach(childSnapshot => {
+        let recipe = { id: childSnapshot.key, ...childSnapshot.val() };
+        recipes.push(recipe);
+      });
+
+      recipes.sort((a, b) => b.timestamp - a.timestamp);
+      return recipes;
+    } else {
+      console.log("No recipes available");
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching recipes:", error);
+    throw error;
+  }
+}
+
 
 // Fetch a single recipe by ID
 const getRecipeById = async (id) => {
@@ -160,8 +182,39 @@ const deleteRecipe = async (recipeId) => {
   }
 };
 
+const getIngredientsFromRecipe = async (recipeId) => {
+  try {
+    const snapshot = await get(child(dbRef(realtimeDb), `recipes/${recipeId}/ingredients`));
+    if (snapshot.exists()) {
+      return snapshot.val();
+    } else {
+      console.log("No ingredients available");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching ingredients:", error);
+    throw error;
+  }
+}
+
+const getRecipeTitle = async (recipeId) => {
+  try {
+    const snapshot = await get(child(dbRef(realtimeDb), `recipes/${recipeId}/title`));
+    if (snapshot.exists()) {
+      return snapshot.val();
+    } else {
+      console.log("No title available");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching title:", error);
+    throw error;
+  }
+}
+
 export default {
   getAllRecipes,
+  getAllRecipesArray,
   getRecipeById,
   getRecipesByCategory,
   getCategories,
@@ -169,5 +222,7 @@ export default {
   getUserRatingForRecipe,
   setUserRatingForRecipe,
   getUserById,
-  deleteRecipe
-};
+  deleteRecipe,
+  getIngredientsFromRecipe,
+  getRecipeTitle,
+}

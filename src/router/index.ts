@@ -9,6 +9,7 @@ import RegisterView from '../views/RegisterView.vue';
 import AddRecipeView from '../views/AddRecipeView.vue';
 import SettingsView from '../views/SettingsView.vue';
 import ManagePostView from '../views/ManagePostView.vue';
+import PlannerView from '../views/PlannerView.vue';
 
 
 const routes = [
@@ -45,6 +46,11 @@ const routes = [
       name: 'AddRecipe',
       component: () => import('../views/AddRecipeView.vue'),
       meta: { requiresAuth: true } // Add this line
+    },
+    {
+      path: '/planner',
+      name: 'Planner',
+      component: PlannerView,
     },
     {
       path: '/manage-post',

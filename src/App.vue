@@ -26,7 +26,7 @@ const logout = async () => {
 };
 
 const goToAddRecipe = () => {
-  router.push({ name: 'AddRecipe' });
+router.push({ name: 'AddRecipe' });
 };
 
 const menuitems = ref([
