@@ -84,43 +84,45 @@ watch(ingredients, (newIngredients) => {
 </script>
 
 <template>
-  <div class="container mx-8 my-8">
-    <h1 class="text-2xl font-bold mb-4">Weekly Planner</h1>
-  </div>
-
-  <div class="flex justify-between px-8">
-    <!--Days Column-->
-    <div class="w-1/2">
-      <div v-for="day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']" :key="day" class="mb-4">
-          <h2 class="font-bold">{{ day }}</h2>
-          <div class="flex flex-col">
-            <div v-for="(recipe, index) in selectedRecipes[day]" :key="index">
-              <select v-model="selectedRecipes[day][index]" v-if="recipeOptions.length > 0" :name="`recipes-${day}-${index}`" :id="`recipes-${day}-${index}`" class="mt-2 w-64 border rounded" @change="handleRecipeSelection(day, index, selectedRecipes[day][index])">
-                <option disabled value="">Select a recipe</option>
-                <option v-for="option in recipeOptions" :key="option.id" :value="option.id">
-                  {{ option.text }}
-                </option>
-              </select>
-            </div>
-          </div>
-        </div>
-        <button @click="clearRecipes" class="mb-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-          Clear All Selected Recipes
-        </button>
+  <div class="planner-class">
+      <div class="container mx-8 my-8">
+      <h1 class="text-2xl font-bold mb-4">Weekly Planner</h1>
     </div>
 
-    <!--Ingredients Column-->
-    <div class="w-1/2">
-      <div class="container mb-4">
-        <h1 class="text-2xl font-bold mb-4">Ingredients</h1>
-        <ul>
-          <li v-for="ingredient in ingredientsRef" :key="ingredient">{{ ingredient }}</li>
-        </ul>
+    <div class="flex justify-between px-8">
+      <!--Days Column-->
+      <div class="w-1/2">
+        <div v-for="day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']" :key="day" class="mb-4">
+            <h2 class="font-bold">{{ day }}</h2>
+            <div class="flex flex-col">
+              <div v-for="(recipe, index) in selectedRecipes[day]" :key="index">
+                <select v-model="selectedRecipes[day][index]" v-if="recipeOptions.length > 0" :name="`recipes-${day}-${index}`" :id="`recipes-${day}-${index}`" class="mt-2 w-64 border rounded" @change="handleRecipeSelection(day, index, selectedRecipes[day][index])">
+                  <option disabled value="">Select a recipe</option>
+                  <option v-for="option in recipeOptions" :key="option.id" :value="option.id">
+                    {{ option.text }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <button @click="clearRecipes" class="mb-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+            Clear All Selected Recipes
+          </button>
       </div>
-      <!-- Save button -->
-      <button @click="generateIngredientsText" class="mb-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-        Download Ingredients List
-      </button>
+
+      <!--Ingredients Column-->
+      <div class="w-1/2">
+        <div class="container mb-4">
+          <h1 class="text-2xl font-bold mb-4">Ingredients</h1>
+          <ul>
+            <li v-for="ingredient in ingredientsRef" :key="ingredient">{{ ingredient }}</li>
+          </ul>
+        </div>
+        <!-- Save button -->
+        <button @click="generateIngredientsText" class="mb-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          Download Ingredients List
+        </button>
+      </div>
     </div>
   </div>
 </template>
