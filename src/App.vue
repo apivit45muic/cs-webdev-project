@@ -5,6 +5,7 @@ import { auth } from '@/js/firebase.js';
 import { RouterLink, RouterView } from 'vue-router';
 import { RocketLaunchIcon } from '@heroicons/vue/24/solid';
 import router from '@/router/index.ts'
+import Footer from '@/components/Footer.vue';
 
 const user = ref(null);
 
@@ -39,6 +40,7 @@ const menuitems = ref([
 </script>
 
 <template>
+  <div class="flex flex-col min-h-screen">
   <nav>
     <div class="bg-gray-900 text-gray-100 px-3 py-5 md:flex justify-between item-center">
       <!-- LOGO PART -->
@@ -67,18 +69,19 @@ const menuitems = ref([
       </div>
     </div>
   </nav>
-  <RouterView />
-  <button
+  <RouterView class="flex-grow" />
+
+<button
   v-if="user && $route.name !== 'AddRecipe'"
   @click="goToAddRecipe"
   title="Add Recipe"
   class="fixed bottom-4 right-4 p-3 bg-blue-500 rounded-full cursor-pointer hover:bg-blue-600"
-  >
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white" class="w-6 h-6">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-    </svg>
-  </button>
+>
+  <!-- SVG for add icon -->
+</button>
 
+<Footer />
+</div>
 </template>
 
 

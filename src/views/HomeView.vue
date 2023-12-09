@@ -14,7 +14,7 @@
         Loading more recipes...
       </div>
     </div>
-    <Footer />
+    <!-- <Footer /> -->
   </div>
 </template>
 
